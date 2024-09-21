@@ -24,7 +24,11 @@ class AuthController extends Controller
         ]);
 
         $user = User::create($validatedUser);
-        return $user;
+        $token = $user->createToken($request->name)->plainTextToken;
+        return [
+            'user' => $user,
+            'token' => $token
+        ];
     }
 
 
