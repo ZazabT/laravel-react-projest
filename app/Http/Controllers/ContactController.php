@@ -6,24 +6,40 @@ use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+use Psy\Readline\Hoa\Console;
 
 class ContactController extends Controller
 {
     // Apply middleware using the constructor
-    public function __construct()
-    {
-        // Apply 'auth:sanctum' middleware to store, update, and delete methods
-        $this->middleware('auth:sanctum')->only(['store', 'update', 'destroy']);
-    }
+    // public function __construct()
+    // {
+    //     // Apply 'auth:sanctum' middleware to store, update, and delete methods
+    //     $this->middleware('auth:sanctum')->only(['store', 'update', 'destroy']);
+    // }
 
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {
-        return Contact::all(); // Public route, no authentication required
+    {   
+        // Get the authenticated user
+        $user = Auth::user();
+        
+        if ($user) {
+            // Fetch contacts where user_id matches the authenticated user's ID
+            $contacts = Contact::where('user_id', $user->id)->get();
+            return response()->json($contacts);
+        }
+    
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
-
+    
+    /** 
+     * Get all contacts for the authenticated user
+     */
+    
+     
     /**
      * Store a newly created resource in storage.
      */
@@ -38,8 +54,8 @@ class ContactController extends Controller
         ]);
         
         // Create contact for the authenticated user
-        $contact = $request->user->contacts()->create($validatedData);
-
+        $user = Auth::user();
+        $contact = $user->contacts()->create($validatedData);
         return response()->json($contact, 201);
     }
 
@@ -76,7 +92,7 @@ class ContactController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Contact $contact)
+    public function destroy( Contact $contact)
     {
         Gate::authorize('modify' , $contact);
         $contact->delete();

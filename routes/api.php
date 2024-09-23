@@ -10,7 +10,10 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // contact crud routes
-Route::apiResource('contacts' , ContactController::class );
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('contacts', ContactController::class);
+});
+
 
 
 
