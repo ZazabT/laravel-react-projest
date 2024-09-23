@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 
 class ContactController extends Controller
 {
@@ -28,12 +29,6 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        // The 'auth:sanctum' middleware ensures the user is authenticated before reaching here
-        $user = $request->user();
-
-        if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
 
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -41,9 +36,9 @@ class ContactController extends Controller
             'type' => ['required', 'in:family,business,other,private,personal'],
             'description' => ['nullable', 'string', 'max:500'],
         ]);
-
+        
         // Create contact for the authenticated user
-        $contact = $user->contacts()->create($validatedData);
+        $contact = $request->user->contacts()->create($validatedData);
 
         return response()->json($contact, 201);
     }
@@ -61,13 +56,7 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
-        // The 'auth:sanctum' middleware ensures the user is authenticated before reaching here
-        $user = $request->user();
-
-        if ($user->id !== $contact->user_id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
+        Gate::authorize('modify' , $contact);
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone_no' => ['required', 'string', 'regex:/^[0-9\-\+]{9,15}$/'],
@@ -89,14 +78,7 @@ class ContactController extends Controller
      */
     public function destroy(Request $request, Contact $contact)
     {
-        // The 'auth:sanctum' middleware ensures the user is authenticated before reaching here
-        $user = $request->user();
-
-        // Only allow the contact owner to delete their contact
-        if ($user->id !== $contact->user_id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
+        Gate::authorize('modify' , $contact);
         $contact->delete();
         
         return response()->json([

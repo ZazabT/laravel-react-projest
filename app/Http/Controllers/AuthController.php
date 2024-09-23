@@ -35,34 +35,38 @@ class AuthController extends Controller
 
 
     // login
-
-    public function login(Request $request){    
+    public function login(Request $request) {
+        // Validate incoming request data
         $validatedUser = $request->validate([
             'email' => [
                 'required',
                 'string',
-                'email', // Ensure it's a valid email format
-                'max:255', // Limit length
-                'exists:users,email',// the email exist
-                'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/', // Custom regex for more stringent email validation
+                'email',
+                'max:255',
+                'exists:users,email',
+                'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/',
             ],
             'password' => ['required'],
         ]);
-
-
+    
+        // Find the user by email
         $user = User::where('email', $validatedUser['email'])->first();
-        if(!$user || !Hash::check($validatedUser['password'], $user->password)){
-           return [
-               'message' => 'Invalid credentials'
-           ];
+    
+        // Check for user existence and password match
+        if (!$user || !Hash::check($validatedUser['password'], $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
-
+    
+        // Generate authentication token
         $token = $user->createToken($user->name)->plainTextToken;
-        return [
+    
+        // Return user data and token
+        return response()->json([
             'user' => $user,
-            'token' => $token
-        ];
+            'token' => $token,
+        ]);
     }
+    
 
 
     // logout 
