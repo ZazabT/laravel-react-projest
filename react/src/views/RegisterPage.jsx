@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
+import useAuthStore from '../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +14,8 @@ const RegisterPage = () => {
 
   const [errors, setErrors] = useState({});
   const [animateError, setAnimateError] = useState(false);
+  const {setAuth} = useAuthStore();
+  const  navigate = useNavigate();
 
   // Shake animation keyframes
   const shakeAnimation = `
@@ -36,14 +40,10 @@ const RegisterPage = () => {
       const res = await axios.post('/api/register', formData);
       console.log(res.data);
 
-      setFormData({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
-      });
-
-      // Optionally redirect to login page here
+      const {user , token} = res.data;
+        setAuth(user , token);
+      // navigate to home
+        navigate('/');
 
     } catch (error) {
       console.error(error.response.data);
@@ -54,6 +54,13 @@ const RegisterPage = () => {
         setAnimateError(false);
       }, 5000); 
     }
+    // Reset form data
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      password_confirmation: '',
+    });
   };
 
   return (

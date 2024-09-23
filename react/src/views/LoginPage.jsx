@@ -13,6 +13,8 @@ const LoginPage = () => {
 
   const [errors, setErrors] = useState({});
   const [animateError, setAnimateError] = useState(false);
+  const {setAuth} = useAuthStore();
+
 
   // Shake animation keyframes
   const shakeAnimation = `
@@ -37,9 +39,11 @@ const LoginPage = () => {
       // Send form data to server
       const res = await axios.post('/api/login', formData);
       console.log(res.data);
+      const {user , token} = res.data;
 
-      // Optionally redirect to home page
-      navigate('/home');
+      setAuth(user , token);
+      // navigate to home
+      navigate('/');
 
     } catch (error) {
       // Check if the error response contains data
@@ -82,7 +86,7 @@ const LoginPage = () => {
               style={{ animation: animateError ? 'shake 0.5s' : 'none' }}
             >
               <ul>
-                {Object.entries(errors).map(([key, value], index) => (
+                {Object.entries(errors).map(([value], index) => (
                   <li key={index}>{value}</li>
                 ))}
               </ul>
