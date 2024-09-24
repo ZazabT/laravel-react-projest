@@ -94,11 +94,11 @@ const HomePage = () => {
       {/* Top Navigation Bar */}
       
 
-      <header className="text-center mb-12"><nav className="flex justify-between items-center p-4 bg-indigo-600 text-white rounded-lg mb-6">
+      <header className="text-center mb-12"><nav className="flex justify-between items-center p-4 bg-indigo-600 text-white rounded mb-6">
         <h2 className="text-lg font-semibold">Welcome, {user.name}</h2>
         <button
           onClick={handleLogout}
-          className="bg-red-500 py-2 px-4 rounded-lg hover:bg-red-600 transition"
+          className=" py-2 px-4 rounded-lg hover:text-red-600"
         >
           Logout
         </button>
@@ -133,7 +133,7 @@ const HomePage = () => {
       <div className="flex justify-center mb-6 fixed bottom-10 left-0 right-0">
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="bg-indigo-600 text-white py-3 px-6 rounded-full hover:bg-indigo-700 transition text-2xl"
+          className="bg-indigo-600 text-white py-3 px-6 rounded-xl hover:bg-indigo-700 transition text-2xl"
         >
           +
         </button>
