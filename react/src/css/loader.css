@@ -1,0 +1,14 @@
+
+.loader {
+  border: 8px solid rgba(255, 255, 255, 0.2);
+  border-top: 8px solid #4f46e5; /* Change this color to match your theme */
+  border-radius: 50%;
+  width: 40px; /* Adjust size */
+  height: 40px; /* Adjust size */
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
