@@ -92,7 +92,9 @@ const HomePage = () => {
   return (
     <div className="container mx-auto py-10 px-6 lg:px-8 relative">
       {/* Top Navigation Bar */}
-      <nav className="flex justify-between items-center p-4 bg-indigo-600 text-white rounded-lg mb-6">
+      
+
+      <header className="text-center mb-12"><nav className="flex justify-between items-center p-4 bg-indigo-600 text-white rounded-lg mb-6">
         <h2 className="text-lg font-semibold">Welcome, {user.name}</h2>
         <button
           onClick={handleLogout}
@@ -101,8 +103,6 @@ const HomePage = () => {
           Logout
         </button>
       </nav>
-
-      <header className="text-center mb-12">
         <h1 className="text-3xl lg:text-5xl font-bold mb-4 text-indigo-600">Manage Your Contacts</h1>
         <p className="text-lg text-gray-600">Organize your contacts with ease</p>
       </header>
